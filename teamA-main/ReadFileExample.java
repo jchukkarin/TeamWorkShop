@@ -5,19 +5,16 @@ import java.util.Scanner;
 public class ReadFileExample {
     public static void main(String[] args) {
         try {
-            // ระบุไฟล์
             File file = new File("C:\\Output\\Textfile.txt");
             Scanner scanner = new Scanner(file);
 
             int currentYear = 2024;
 
-            // อ่านข้อมูลจากไฟล์
             while (scanner.hasNextLine()) {
                 String name = "";
                 int birthYear = 0;
                 int score = 0;
 
-                // อ่านข้อมูล 3 บรรทัด
                 String line = scanner.nextLine().trim();
                 if (line.startsWith("Name")) {
                     name = line.split(" : ")[1].trim();
@@ -31,15 +28,13 @@ public class ReadFileExample {
                     score = Integer.parseInt(line.split(" : ")[1].trim());
                 }
 
-                // คำนวณอายุและแปลงคะแนนเป็นเกรด
                 int age = currentYear - birthYear;
                 String grade = calculateGrade(score);
 
-                // แสดงผล
+
                 System.out.println("Name: " + name);
                 System.out.println("Age: " + age);
                 System.out.println("Software Testing Score: " + grade);
-                System.out.println(); // เพิ่มบรรทัดว่างสำหรับคั่นชุดข้อมูล
             }
 
             scanner.close();
