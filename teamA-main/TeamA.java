@@ -1,67 +1,82 @@
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDate;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class TeamA {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        try {
+            // กำหนดที่อยู่ไฟล์
+            File outputFolder = new File("C:\\Output");
+            File inputFile = new File(outputFolder, "Textfile.txt");  // ไฟล์ข้อมูลต้นทาง
 
-        // รับข้อมูลจากผู้ใช้
-        System.out.print("Enter your name: ");
-        String userName = scanner.nextLine();
+            // สร้างโฟลเดอร์ Output หากไม่มี
+            if (!outputFolder.exists()) {
+                outputFolder.mkdirs();
+                System.out.println("สร้างโฟลเดอร์ Output ขึ้นมาใหม่");
+            }
 
-        System.out.print("Enter year of birth (CE): ");
-        int birthYear = scanner.nextInt();
+            // สร้างไฟล์ Textfile.txt ใหม่ หากไม่มีอยู่
+            if (!inputFile.exists()) {
+                inputFile.createNewFile();
+                System.out.println("สร้างไฟล์ Textfile.txt ขึ้นใหม่");
+            }
 
-        System.out.print("Enter your score in Software Testing: ");
-        int testingScore = scanner.nextInt();
+            // สร้าง Scanner เพื่อรับข้อมูลจากผู้ใช้
+            Scanner scanner = new Scanner(System.in);
+            PrintWriter writer = new PrintWriter(inputFile);
 
-        // คำนวณอายุ
-        int age = calculateAge(birthYear);
+            // อ่านข้อมูลจากผู้ใช้
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine();
 
-        // คำนวณเกรดจากคะแนน
-        String grade = calculateGrade(testingScore);
+            System.out.print("Enter year of birth (CE): ");
+            int birthYear = scanner.nextInt();
+            
+            System.out.print("Enter your score in Software Testing: ");
+            int score = scanner.nextInt();
 
-        // สร้างผลลัพธ์สำหรับบันทึกลงไฟล์
-        String result = String.format("Name : %s\nAge : %d\nSoftware Testing Grade : %s", userName, age, grade);
+            // คำนวณอายุ
+            int currentYear = 2024;
+            int age = currentYear - birthYear;
 
-        // เขียนผลลัพธ์ลงไฟล์
-        String outputPath = "C:/Output/Textfile.txt";
-        saveToFile(outputPath, result);
+            // คำนวณเกรด
+            String grade = calculateGrade(score);
 
-        System.out.println("The data has been successfully saved to the file.");
+            // แสดงผลในคอนโซล
+            System.out.println("\nOutput Textfile.txt");
+            System.out.println("Name: " + name);
+            System.out.println("Age: " + age);
+            System.out.println("Software Testing Score: " + grade);
+
+            // บันทึกข้อมูลลงในไฟล์
+            writer.println("Name : " + name);
+            writer.println("Christian Era : " + birthYear);
+            writer.println("Software Testing Score : " + score);
+            writer.println();  // เพิ่มบรรทัดว่าง
+
+            // ปิดไฟล์และ scanner
+            writer.close();
+            scanner.close();
+
+            System.out.println("\nThe data has been successfully saved to the file.");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("ไม่พบไฟล์: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+        }
     }
 
-    // คำนวณอายุจากปีเกิด
-    public static int calculateAge(int birthYear) {
-        int currentYear = LocalDate.now().getYear();
-        return currentYear - birthYear;
-    }
-
-    // แปลงคะแนนเป็นเกรด
+    // เมธอดสำหรับคำนวณเกรดตามคะแนน
     public static String calculateGrade(int score) {
         if (score >= 80) return "A";
-        else if (score >= 75) return "B+";
-        else if (score >= 70) return "B";
-        else if (score >= 65) return "C+";
-        else if (score >= 60) return "C";
-        else if (score >= 55) return "D+";
-        else if (score >= 50) return "D";
-        else return "F";
-    }
-
-    // บันทึกข้อความลงในไฟล์
-    public static void saveToFile(String filePath, String content) {
-        File file = new File(filePath);
-        file.getParentFile().mkdirs(); // สร้างโฟลเดอร์หากไม่มี
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(content);
-        } catch (IOException e) {
-            System.err.println("Error: Unable to save the data to the file.");
-            e.printStackTrace();
-        }
+        if (score >= 75) return "B+";
+        if (score >= 70) return "B";
+        if (score >= 65) return "C+";
+        if (score >= 60) return "C";
+        if (score >= 55) return "D+";
+        if (score >= 50) return "D";
+        return "F";
     }
 }
